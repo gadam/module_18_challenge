@@ -14,11 +14,9 @@
 
 ################################################################################
 # Imports
-import streamlit as st
 from dataclasses import dataclass
 from typing import Any, List
 import datetime as datetime
-import pandas as pd
 import hashlib
 
 ################################################################################
@@ -99,108 +97,4 @@ class PyChain:
         print("Blockchain is Valid")
         return True
 
-################################################################################
-# Streamlit Code
 
-# Adds the cache decorator for Streamlit
-
-
-@st.cache(allow_output_mutation=True)
-def setup():
-    print("Initializing Chain")
-    return PyChain([Block("Genesis", 0)])
-
-
-st.markdown("# PyChain")
-st.markdown("## Store a Transaction Record in the PyChain")
-
-pychain = setup()
-
-################################################################################
-# Step 2:
-# Add Relevant User Inputs to the Streamlit Interface
-
-# 2. Add an input area for `sender` from the user.
-# 3. Add an input area for `receiver` from the user.
-# 4. Add an input area for `amount` from the user.
-# 5. As part of the Add Block button functionality, update `new_block` so that `Block` 
-#   consists of an attribute named `record`, which is set equal to a `Record` that contains the `sender`, 
-# `receiver`, and `amount` values. The updated `Block`should also include the attributes for `creator_id` and `prev_hash`.
-
-# Add an input area for `sender` from the user.
-sender_input = st.text_input("Sender")
-
-# Add an input area for `receiver` from the user.
-receiver_input = st.text_input("Receiver")
-
-# Add an input area for `amount` from the user.
-amount_input = st.number_input("Amount")
-
-if st.button("Add Block"):
-    prev_block = pychain.chain[-1]
-    prev_block_hash = prev_block.hash_block()
-
-    # Update `new_block` so that `Block` consists of an attribute named `record`
-    # which is set equal to a `Record` that contains the `sender`, `receiver`,
-    # and `amount` values
-    new_block = Block(
-        record = Record(
-            sender = sender_input,
-            receiver = receiver_input,
-            amount=amount_input
-        ),
-        creator_id=42,
-        prev_hash=prev_block_hash
-    )
-
-    pychain.add_block(new_block)
-    st.balloons()
-
-################################################################################
-# Streamlit Code (continues)
-
-st.markdown("## The PyChain Ledger")
-
-pychain_df = pd.DataFrame(pychain.chain).astype(str)
-st.write(pychain_df)
-
-difficulty = st.sidebar.slider("Block Difficulty", 1, 5, 2)
-pychain.difficulty = difficulty
-
-st.sidebar.write("# Block Inspector")
-selected_block = st.sidebar.selectbox(
-    "Which block would you like to see?", pychain.chain
-)
-
-st.sidebar.write(selected_block)
-
-if st.button("Validate Chain"):
-    st.write(pychain.is_valid())
-
-################################################################################
-# Step 4:
-# Test the PyChain Ledger by Storing Records
-
-# Test your complete `PyChain` ledger and user interface by running your
-# Streamlit application and storing some mined blocks in your `PyChain` ledger.
-# Then test the blockchain validation process by using your `PyChain` ledger.
-# To do so, complete the following steps:
-
-# 1. In the terminal, navigate to the project folder where you've coded the
-#  Challenge.
-
-# 2. In the terminal, run the Streamlit application by
-# using `streamlit run pychain.py`.
-
-# 3. Enter values for the sender, receiver, and amount, and then click the "Add
-# Block" button. Do this several times to store several blocks in the ledger.
-
-# 4. Verify the block contents and hashes in the Streamlit drop-down menu.
-# Take a screenshot of the Streamlit application page, which should detail a
-# blockchain that consists of multiple blocks. Include the screenshot in the
-# `README.md` file for your Challenge repository.
-
-# 5. Test the blockchain validation process by using the web interface.
-# Take a screenshot of the Streamlit application page, which should indicate
-# the validity of the blockchain. Include the screenshot in the `README.md`
-# file for your Challenge repository.
