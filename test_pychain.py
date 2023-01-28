@@ -3,6 +3,7 @@
 # Imports
 import unittest
 import pychain
+import hashlib
 import re
 
 class TestPychain(unittest.TestCase):
@@ -47,7 +48,7 @@ class TestPychain(unittest.TestCase):
         self.assertIsNot(block.nonce, 0)
 
     def test_block_added_to_chain(self):
-        """Check that a block can be added to the block"""
+        """Check that a block can be added to the chain"""
         blockchain = pychain.PyChain([self.test_block])
         prev_block_hash = self.test_block.hash_block()
         record = pychain.Record(
@@ -63,6 +64,40 @@ class TestPychain(unittest.TestCase):
         blockchain.add_block(new_block)
         self.assertEqual(len(blockchain.chain), 2)
         
+    def test_adding_new_blocks_maintains_valid_chain(self):
+        """Check that a block added to the chain maintains chain integrity"""
+        blockchain = pychain.PyChain([self.test_block])
+        prev_block_hash = self.test_block.hash_block()
+        record = pychain.Record(
+            "Add Block",
+            "Unit Tester",
+            888
+        )
+        new_block = pychain.Block(
+            record,
+            1,
+            prev_block_hash
+        )
+        blockchain.add_block(new_block)    
+        self.assertTrue(blockchain.is_valid())
+        
+    def test_adding_invalid_block_can_be_detected(self):
+        """Check that an invalid block added to the chain can be detected"""
+        blockchain = pychain.PyChain([self.test_block])
+        sha = hashlib.sha256()
+        sha.update(str("Random string").encode())
+        record = pychain.Record(
+            "Add Invalid Block",
+            "Unit Tester",
+            777
+        )
+        new_block = pychain.Block(
+            record,
+            1,
+            sha.hexdigest()
+        )
+        blockchain.add_block(new_block)    
+        self.assertFalse(blockchain.is_valid())
 
 if __name__ == "__main__":
     unittest.main()
