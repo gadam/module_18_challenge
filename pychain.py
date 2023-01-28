@@ -77,7 +77,7 @@ class PyChain:
 
             calculated_hash = block.hash_block()
 
-        print("Winning Hash", calculated_hash)
+        # print("Winning Hash", calculated_hash)
         return block
 
     def add_block(self, candidate_block):
