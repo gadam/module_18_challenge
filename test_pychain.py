@@ -33,7 +33,18 @@ class TestPychain(unittest.TestCase):
     def test_block_can_be_hashed(self):
         """Check that block is correctly hashed using SHA256"""
         sha_pattern = "^[a-fA-F0-9]{64}$"
-        self.assertTrue(re.match(sha_pattern, self.test_block.hash_block()))
+        self.assertTrue(
+            re.match(
+                sha_pattern, 
+                self.test_block.hash_block()
+            )
+        )
+
+    def test_proof_of_work_finds_nonce(self):
+        """Check that the Proof of Work validation finds the correct code"""
+        blockchain = pychain.PyChain([self.test_block])
+        block = blockchain.proof_of_work(blockchain.chain[0])
+        self.assertIsNot(block.nonce, 0)
 
 if __name__ == "__main__":
     unittest.main()
