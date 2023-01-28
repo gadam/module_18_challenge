@@ -46,5 +46,23 @@ class TestPychain(unittest.TestCase):
         block = blockchain.proof_of_work(blockchain.chain[0])
         self.assertIsNot(block.nonce, 0)
 
+    def test_block_added_to_chain(self):
+        """Check that a block can be added to the block"""
+        blockchain = pychain.PyChain([self.test_block])
+        prev_block_hash = self.test_block.hash_block()
+        record = pychain.Record(
+            "Add Block",
+            "Unit Tester",
+            888
+        )
+        new_block = pychain.Block(
+            record,
+            1,
+            prev_block_hash
+        )
+        blockchain.add_block(new_block)
+        self.assertEqual(len(blockchain.chain), 2)
+        
+
 if __name__ == "__main__":
     unittest.main()
