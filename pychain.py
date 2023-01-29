@@ -1,16 +1,7 @@
 # PyChain Ledger
 ################################################################################
-# This app builds a ledger using the `blockchain` approach
-
-# Step 1: Create a Record Data Class
-# * Creates a new data class named `Record`. This class will serve as the
-# blueprint for the financial transaction records that the blocks of the ledger
-# will store.
-
-# Step 2: Add Relevant User Inputs to the Streamlit Interface
-# * Create additional user input areas in the Streamlit application. These
-# input areas should collect the relevant information for each financial record
-# that are stored in the `PyChain` ledger.
+# This module file contains the class definitions for 
+# an app that builds a ledger using the `blockchain` approach
 
 ################################################################################
 # Imports
@@ -27,12 +18,14 @@ import hashlib
 # `amount` attributes
 @dataclass
 class Record:
+    """Record to store the sender, receiver and amount"""
     sender: str
     receiver: str
     amount: float
 
 @dataclass
 class Block:
+    """Basic `block` structure to store the record, creator, previous hash and nonce puzzle"""
     record: Record
     creator_id: int
     prev_hash: str = "0"
@@ -40,6 +33,7 @@ class Block:
     nonce: int = 0
 
     def hash_block(self):
+        """Construct a 64-byte one-way hash using 256-bit SHA encoding"""
         sha = hashlib.sha256()
 
         record = str(self.record).encode()
@@ -62,11 +56,13 @@ class Block:
 
 @dataclass
 class PyChain:
+    """PyChain class responsible for managing the build and validation of the blockchain"""
     chain: List[Block]
     difficulty: int = 4
 
     def proof_of_work(self, block):
-
+        """Solves the nonce puzzle based on a difficuly level 
+        - used to select a miner to add to the pychain"""
         calculated_hash = block.hash_block()
 
         num_of_zeros = "0" * self.difficulty
@@ -77,24 +73,23 @@ class PyChain:
 
             calculated_hash = block.hash_block()
 
-        # print("Winning Hash", calculated_hash)
         return block
 
     def add_block(self, candidate_block):
+        """Adds a candidate block to the pychain"""
         block = self.proof_of_work(candidate_block)
         self.chain += [block]
 
     def is_valid(self):
+        """Validates the pychain integrity"""
         block_hash = self.chain[0].hash_block()
 
         for block in self.chain[1:]:
             if block_hash != block.prev_hash:
-                print("Blockchain is invalid!")
                 return False
 
             block_hash = block.hash_block()
 
-        print("Blockchain is Valid")
         return True
 
 
