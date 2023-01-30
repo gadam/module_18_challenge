@@ -28,12 +28,37 @@ The `PyChain` class is responsible for managing the build and validation of the 
 ## Streamlit UI
 File `pychain_ui.py` makes use of the `streamlit` library to present the user with a web-based user interface allowing the user to see the `PyChain` ledger entries and examine the contents of each record individually.  In addition, the user interface includes a `Validate` button that initates a validating process of the entire `PyChain` ledger.
 
-![PyLedger User Interface](./PyLedgerUI.png)
+![PyLedger User Interface](./images/PyLedgerUI.png)
 
-### Testing evidence
+## Testing
+
+### Unit Testing
+Testing was performed in two parts:
+* Automated unit testing
+* Functional testing via the `streamlit` user interface
+
 To run the automated unit test file, use the command `python test_pychain.py`.
+The unit testing script `test_pychain.py` contains 6 separate unit tests that are run each time the above command is executed and reports any failures to the console.  If there are no failures, the command shows the number of tests run and indicates `OK`.  This script can be updated and run whenever the application is modified to see if the changes have any impact on existing functionality.  As shown in the screenshot below, there are currently no errors in the unit testing suites.
 
-To run the web-based user interface, use the command `streamlit run pychain_ui.py`.
+![Unit Test Results](./images/Unit_Tests.png)
 
-Testing evidence can be found in the file `PyChainTestEvidence.mp4` in the project folder.
-![PyChain Testing Evidence Video](./PyChainTestEvidence.mp4)
+### Functional Testing
+Functional testing was conducted via the web-based user interface where each of the application's capabilities were exercised.  To run the web-based user interface, use the command `streamlit run pychain_ui.py`.
+
+
+#### Adding new transactions
+The screenshot below show the page prior to transactions being added with just the initital `Genesis` block present.  The `Genesis` block is created upon application startup.
+
+![Before](./images/Initial_page.png)
+
+The screen below shows the ledger after 4 transactions have been added.
+![4 transactions added](./images/Transactions.png)
+
+#### Examining the last block
+The screen below shows the details of the last block created in the ledger via the `Block  Inspector`:
+
+![Last block](./images/Last_Block.png)
+
+#### Validating the Ledger
+The ledger can be validated by selecting the `Validate Chain` button.  Results are shown below:
+![Validating Ledger](./images/Validating_ledger.png)
